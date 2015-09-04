@@ -1,0 +1,27 @@
+A short protocol I (Henk) used to infer a phylogenetic tree from SNPs called by Cortex
+
+1. Filter individual VCFs to include only SNPs (PH_SNPs excluded)
+
+ for f in *.vcf; do filterSNPs_pass_cortex_outbryk.sh $f; done
+ 
+ 2. Merge all filtered viles into one vcf:
+ 
+ vcf-merge *.passedSNPs.vcf.gz > mergedPassed.vcf
+ 
+ 3. Convert merged vcf into a multi-fasta file (uses an edited version of vcf_tab_to_fasta_alignment.pl written by Christina BergeY) :
+ 
+ vcf_CortextofastaSNPs.sh mergedPassed.vcf
+ 
+ 4. use mothur (www.mothur.org) filter.seqs to filter SNP sites containing missing data.
+ mothur
+ >filter.seqs(fasta=mergedPassed.vcf.all_snps.fasta, vertical=T)
+ 
+ 5. Use snp_sites (https://github.com/sanger-pathogens/snp_sites) to convert  filtered multi-fasta to phylip format 
+ 
+ snp_sites -p -o mergedPassed.vcf.all_snps.phy mergedPassed.vcf.all_snps.filter.fasta
+ 
+ 6. Use phyml (http://www.atgc-montpellier.fr/phyml/) to infer phylogenetic tree from phylip file:
+ 
+ phyml -i mergedPassed.vcf.all_snps.phy -d nt -q -b 250 -m K80 --quiet
+ 
+ 7. View tree in Figtree (http://tree.bio.ed.ac.uk/software/figtree/)
