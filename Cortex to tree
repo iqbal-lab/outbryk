@@ -17,8 +17,8 @@ A short protocol I (Henk) used to infer a phylogenetic tree from SNPs called by 
  vcf_CortextofastaSNPs.sh mergedPassed.vcf
  
  5. use mothur (www.mothur.org) filter.seqs to filter SNP sites containing missing data.
- mothur
- >filter.seqs(fasta=mergedPassed.vcf.all_snps.fasta, vertical=T)
+ 
+ echo 'filter.seqs(fasta=mergedPassed.vcf.all_snps.fasta, vertical=T)' > filter.txt; mothur filter.txt
  
  6. Use snp_sites (https://github.com/sanger-pathogens/snp_sites) to convert  filtered multi-fasta to phylip format 
  
