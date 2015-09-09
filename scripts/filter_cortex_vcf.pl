@@ -28,7 +28,8 @@ while (<FILE>)
 	##split out the tab-separated fields into an array
 	my @sp = split(/\t/, $line);
 	my $filter = $sp[6];
-	if ($filter eq "PASS")
+	my $info = $sp[7];
+	if ( ($filter eq "PASS") && ($info =~ /SVTYPE=SNP/) )
 	{
 	    ##if no sample is marked ./. (missing data - probably means this site is not in the core genome
 	    ## or sequence is somehow diverged - could be a nearby SNP)

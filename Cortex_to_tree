@@ -1,0 +1,49 @@
+
+1. To run Cortex on your dataset 
+
+perl cortex/scripts/calling/run_indep_wkflow_with_gnu_par.pl  
+     --index INDEX  
+     --ref_fa reference.fasta  
+     --dir_for_ref_objects ref/
+     --vcftools_dir /path/../vcftools_0.1.9/ 
+     --outdir results/ 
+     --stampy_bin /path/stampy-1.0.23/stampy.py 
+     --kmer 31 
+     --procs 2 
+     --prefix PREFIX
+
+PREFIX will be the start of output filenames - eg might be "salmonella".
+Make sure your PERL5LIB contains
+/path/../vcftools_0.1.9/perl
+
+This will
+a) call per sample
+b) compare all these VCfs and build a ingle candidate site-list
+c) genotype everyone at every site
+d) build a single multi-sample VCF
+
+
+
+2. Filter the VCF to get PASS SNPs, which segregate the sample set (no use if all have same genotype)
+   and making sure you have at least one high confidence REF and one high confidence ALT call. Also removes
+   any site with missing data
+
+perl outbryk/scripts/filter_cortex_vcf.pl results/PREFIX.combined.vcf
+
+will produce results/PREFIX.combined.vcf.filtered
+
+ 
+3. Convert merged vcf into a multi-fasta file (uses an edited version of vcf_tab_to_fasta_alignment.pl written by Christina BergeY) :
+ 
+ vcf_CortextofastaSNPs.sh  results/PREFIX.combined.vcf.filtered
+ 
+
+4. Use snp_sites (https://github.com/sanger-pathogens/snp_sites) to convert  filtered multi-fasta to phylip format 
+ 
+ snp_sites -p -o mergedPassed.vcf.all_snps.phy mergedPassed.vcf.all_snps.filter.fasta
+ 
+5. Use phyml (http://www.atgc-montpellier.fr/phyml/) to infer phylogenetic tree from phylip file:
+ 
+ phyml -i mergedPassed.vcf.all_snps.phy -d nt -q -b 250 -m K80 --quiet
+ 
+6. View tree in Figtree (http://tree.bio.ed.ac.uk/software/figtree/)
