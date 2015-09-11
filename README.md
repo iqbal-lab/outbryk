@@ -8,13 +8,14 @@ the "2015 Rapid NGS Bioinformatic Pipelines for Enhanced Molecular Epidemiologic
       
 First we need to agree on what out pipeline will do
 
-**Salmonella**
 Given a new set of fastq
 
-0. Should we do something cheap (MLST?) to separate into phylogroups? Tempted to try MASH https://github.com/marbl/Mash, http://mash.readthedocs.org/en/latest/index.html
-1. call variants against ?? which reference Henk?
-2. call variants jointly (coords only) then place calls on a reference.
-3. produce a pangenome matrix of resistance genes and any other genes of interest (Henk?)
-4. Use Fasttree to build a phylogeny? Henk?
+0. Run the Cortex stadard independent workflow using a predetermined reference genome
+1. Build a tree and look for clusters
+2. For each cluster, use MASH to choose a closer reference genome https://github.com/marbl/Mash, http://mash.readthedocs.org/en/latest/index.html
+3. Now use the Cortex joint workflow (ie compare samples directly, with no reference involved) using this closer reference for coordinates.
+4. See if this new callset provides better resolution of the cluster
+5. Produce a pangenome matrix of genes of interest (phages initially)
+6. Make manual decisions about outbreak
       
       
