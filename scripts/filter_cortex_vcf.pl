@@ -42,9 +42,9 @@ while (<FILE>)
 	    {
 		### Now collect all the genotypes and confidences
 
-		#my $descriptor = $sp[8]; #   GT:GL:GT_CONF:COV
+		my $descriptor = $sp[8]; #   GT:GL:GT_CONF:COV
 		##really I should just parse it
-		if  ($descriptor ne "GT:GL:GT_CONF:COV")
+		if  ( ($descriptor ne "GT:GL:GT_CONF:COV") && ($descriptor ne "GT:COV:GT_CONF:GL") )
 		{
 		#    die("Combined VCF is not in the format I expected, descriptor is $descriptor not GT:GL:GT_CONF:COV\n");
 		}
