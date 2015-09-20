@@ -9,8 +9,9 @@ use strict;
 ## if a SAMPLE shows evidence of mixture, we need to handle that specifically.
 
 my $vcf =  shift;
-my $out = $vcf.".filtered";
-my $conf_thresh = 2;
+my $conf_thresh = 30;
+my $out = $vcf.".filtered_missing.conf_thresh".$conf_thresh;
+
 
 open(FILE, $vcf)||die();
 open(OUT, ">".$out)||die();
@@ -31,17 +32,21 @@ while (<FILE>)
 	my $info = $sp[7];
 	if ( ($filter eq "PASS") && ($info =~ /SVTYPE=SNP/) )
 	{
-	    ##if no sample is marked ./. (missing data - probably means this site is not in the core genome
+	    ##if not too many samples are marked ./. (missing data - probably means this site is not in the core genome
 	    ## or sequence is somehow diverged - could be a nearby SNP)
-	    if ($line !~ /\.\/\./)
+	    my @c = $line =~ /\.\/\./g;
+	    my $num_missing = scalar(@c);
+
+#	    if ($line !~ /\.\/\./)
+	    if ($num_missing < 0.05 * (scalar(@sp)-9)) ##less than 5% of samples have missing data
 	    {
 		### Now collect all the genotypes and confidences
 
-		my $descriptor = $sp[8]; #   GT:GL:GT_CONF:COV
+		#my $descriptor = $sp[8]; #   GT:GL:GT_CONF:COV
 		##really I should just parse it
 		if  ($descriptor ne "GT:GL:GT_CONF:COV")
 		{
-		    die("Combined VCF is not in the format I expected, descriptor is $descriptor not GT:GL:GT_CONF:COV\n");
+		#    die("Combined VCF is not in the format I expected, descriptor is $descriptor not GT:GL:GT_CONF:COV\n");
 		}
 		my %gt=();
 		my %conf=();
