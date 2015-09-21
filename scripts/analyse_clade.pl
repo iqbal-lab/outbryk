@@ -14,6 +14,7 @@
 #	 This script currently calls a vcf_CortextofastaSNPs2.sh outbryk file - this is Henks script but pointing to things in the right place for me...
 #	 Seems to be slow!
 #	 If the outdir specified doesn't exist, script will make it.
+#	 SNPdiffmatrix script requires your python to have pyvcf, pandas, numpy
 
 use strict;
 use warnings;
