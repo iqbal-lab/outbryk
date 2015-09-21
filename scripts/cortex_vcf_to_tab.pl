@@ -47,6 +47,7 @@ while (<FILE>)
 	my $alt = $sp[4];
 	my $filter = $sp[6];
 	my $format = $sp[8];
+
 	if ( ( $filter eq "PASS") && ($line =~ /SVTYPE=SNP/) )
 	{
 	    print $chrom."\t".$pos."\t".$ref."\t";
@@ -59,6 +60,7 @@ while (<FILE>)
 		my $conf = $sp2[2];
 		if ($gt eq "0/0")
 		{
+
 		    print $ref."/".$ref;
 		}
 		elsif ( ($gt eq "0/1") && ($conf>$conf_thresh) )
@@ -69,7 +71,7 @@ while (<FILE>)
 		{
 		    print $ref."/".$ref; ## this is not in general right, but will work for this data I think
 		}
-		elsif ( ($gt eq "1.1/") && ($conf>$conf_thresh) )
+		elsif ( ($gt eq "1/1") && ($conf>$conf_thresh) )
 		{
 		    print $alt."/".$alt;
 		}
