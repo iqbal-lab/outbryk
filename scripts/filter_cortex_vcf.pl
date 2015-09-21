@@ -5,7 +5,7 @@ use strict;
 my $vcf =  shift;
 
 ## Remove any site with > $missingness_thresh missingness,
-my $missingness_thresh = 0.05
+my $missingness_thresh = 0.05;
 my $conf_thresh = 30;
 
 ## and any site which does not have

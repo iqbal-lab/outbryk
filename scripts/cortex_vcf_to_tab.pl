@@ -15,7 +15,7 @@ my $conf_thresh=30;
 
 check_args($vcf);
 open(FILE, $vcf)||die();
-while (<VCF>)
+while (<FILE>)
 {
     my $line = $_;
     chomp $line;
@@ -40,7 +40,7 @@ while (<VCF>)
     }
     elsif ($line !~ /^\#/)
     {
-	my $sp = split(/\t/, $line);
+	my @sp = split(/\t/, $line);
 	my $chrom = $sp[0];
 	my $pos = $sp[1];
 	my $ref = $sp[3];
@@ -49,6 +49,7 @@ while (<VCF>)
 	my $format = $sp[8];
 	if ( ( $filter eq "PASS") && ($line =~ /SVTYPE=SNP/) )
 	{
+	    print $chrom."\t".$pos."\t".$ref."\t";
 	    my $i;
 	    for ($i=9; $i<scalar(@sp); $i++)
 	    {
@@ -68,9 +69,13 @@ while (<VCF>)
 		{
 		    print $ref."/".$ref; ## this is not in general right, but will work for this data I think
 		}
-		elsif ( ($gt eq "/") && ($conf>$conf_thresh) )
+		elsif ( ($gt eq "1.1/") && ($conf>$conf_thresh) )
 		{
 		    print $alt."/".$alt;
+		}
+		elsif ($gt eq "1/1")
+		{
+		    print $ref."/".$ref;
 		}
 		elsif ($gt eq "./.")
 		{
@@ -92,7 +97,7 @@ while (<VCF>)
 	}
     }
 }
-close(VCF);
+close(FILE);
 
 
 sub check_args
