@@ -58,26 +58,21 @@ while (<FILE>)
 		my @sp2 = split(/:/, $fields);
 		my $gt = $sp2[0];
 		my $conf = $sp2[2];
-		if ($gt eq "0/0")
+		if ($conf<$conf_thresh)
 		{
-
-		    print $ref."/".$ref;
+		    print "./.";
 		}
-		elsif ( ($gt eq "0/1") && ($conf>$conf_thresh) )
+		elsif ($gt eq "0/0") 
 		{
-		    print $ref."/".$alt;
+		    print $ref."/".$ref;
 		}
 		elsif ($gt eq "0/1")
 		{
-		    print $ref."/".$ref; ## this is not in general right, but will work for this data I think
-		}
-		elsif ( ($gt eq "1/1") && ($conf>$conf_thresh) )
-		{
-		    print $alt."/".$alt;
+		    print $ref."/".$alt;
 		}
 		elsif ($gt eq "1/1")
 		{
-		    print $ref."/".$ref;
+		    print $alt."/".$alt;
 		}
 		elsif ($gt eq "./.")
 		{
