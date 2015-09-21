@@ -152,7 +152,10 @@ for (my $i = $starting_col; $i < $num_cols; $i++) {
 		} elsif ($nuc eq './.') {
 			print '-';
 			$count++;
-		
+		} elsif ($nuc eq './') {
+                        print '-';
+                        $count++;
+
 		# Data
 		} elsif ($nuc =~ /(\w)\/(\w)/) {
 			my $first = $1;
