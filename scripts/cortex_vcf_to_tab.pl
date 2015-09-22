@@ -4,7 +4,7 @@ use strict;
 use Getopt::Long;
 
 my $vcf="";
-my $conf_thresh=30;
+my $conf_thresh=5;
 
 &GetOptions(
     'vcf:s'                     =>\$vcf,
