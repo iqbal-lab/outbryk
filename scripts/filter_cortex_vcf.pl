@@ -6,7 +6,7 @@ my $vcf =  shift;
 
 ## Remove any site with > $missingness_thresh missingness,
 my $missingness_thresh = 0.05;
-my $conf_thresh = 30;
+my $conf_thresh = 2;
 
 ## and any site which does not have
 ## BOTH a confident 0/0 call, and a confident 1/1 call.
