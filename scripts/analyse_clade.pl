@@ -68,51 +68,51 @@ print "$ret_st\n";
 ########################
 # i) MASH
 ########################
-# Take first sample mentioned in cluster list and run trimmomatic on it.
-my $cmd1 = "head -1 $input_list";
-my $first = qx{$cmd1};
-chomp $first;
-print "\nFirst sample in clade list: $first\n";
-
-my $cmd2 = "ls $data_dir/$first\*.fastq\*";
-my $ret_cmd2 = qx{$cmd2};
-my @fastqs = split("\n",$ret_cmd2);
-print "\nFound fastqs: @fastqs \n\n";
-
-my $trim = "java -classpath ~/apps/Trimmomatic-0.33/trimmomatic-0.33.jar org.usadellab.trimmomatic.TrimmomaticPE -threads 4 @fastqs $outdir/trim_1P.fq $outdir/trim_1U.fq $outdir/trim_2P.fq $outdir/trim_2U.fq SLIDINGWINDOW:4:15";
-#print "\n$trim\n";
-my $ret_trim = qx{$trim};
-
-# Then use mash to pick a new reference
-my $mash = "mash dist -u $ref_mash $outdir/trim\*.fq > $outdir/mash_summary.txt";
-my $ret_mash = qx{$mash};
-my $mash2 = "sort -nrk5 $outdir/mash_summary.txt | head -5";
-my $ret_mash2 = qx{$mash2};
-print "\nBest reference hits with mash were:\n$ret_mash2";
-my @r = split("\n",$ret_mash2);
-my @r2 =  split("\t", $r[0]);
-my $ref = $r2[0];
-print "\nChosen reference: $ref\n";
-
-#######################
+## Take first sample mentioned in cluster list and run trimmomatic on it.
+#my $cmd1 = "head -1 $input_list";
+#my $first = qx{$cmd1};
+#chomp $first;
+#print "\nFirst sample in clade list: $first\n";
+#
+#my $cmd2 = "ls $data_dir/$first\*.fastq\*";
+#my $ret_cmd2 = qx{$cmd2};
+#my @fastqs = split("\n",$ret_cmd2);
+#print "\nFound fastqs: @fastqs \n\n";
+#
+#my $trim = "java -classpath ~/apps/Trimmomatic-0.33/trimmomatic-0.33.jar org.usadellab.trimmomatic.TrimmomaticPE -threads 4 @fastqs $outdir/trim_1P.fq $outdir/trim_1U.fq $outdir/trim_2P.fq $outdir/trim_2U.fq SLIDINGWINDOW:4:15";
+##print "\n$trim\n";
+#my $ret_trim = qx{$trim};
+#
+## Then use mash to pick a new reference
+#my $mash = "mash dist -u $ref_mash $outdir/trim\*.fq > $outdir/mash_summary.txt";
+#my $ret_mash = qx{$mash};
+#my $mash2 = "sort -nrk5 $outdir/mash_summary.txt | head -5";
+#my $ret_mash2 = qx{$mash2};
+#print "\nBest reference hits with mash were:\n$ret_mash2";
+#my @r = split("\n",$ret_mash2);
+#my @r2 =  split("\t", $r[0]);
+#my $ref = $r2[0];
+#print "\nChosen reference: $ref\n";
+#
+########################
 #ii) run_calls.pl again
 #######################
-# Create INDEX for just the samples named in cluster file
-my $index = "for sample in \$(cat $input_list); do cat $index_dir | grep \$sample &>> $outdir/INDEX; done";
-my $ret_index = qx{$index};
-
-# Make a list for the reference
-my $list = "ls $ref_dir/$ref &> $outdir/list_ref_fa";
-my $ret_list = qx{$list};
-
-# Re-run cortex
-my $prepare = "perl $cortex_dir/scripts/calling/prepare.pl --index $outdir/INDEX  --ref_fa $ref_dir/$ref --dir_for_ref_objects $outdir/ref --vcftools_dir $vcftools_dir --outdir $outdir/results --stampy_bin $stampy_bin --kmer 31";
-print "\n$prepare\n";
-my $ret_prepare = qx{$prepare};
-
-my $run_calls = "perl $cortex_dir/scripts/calling/run_calls.pl --first_kmer 31 --fastaq_index $outdir/INDEX --auto_cleaning yes --bc yes --pd no --outdir $outdir/results --outvcf output_cluster --ploidy 1 --stampy_hash $outdir/ref/stampy/REF --stampy_bin $stampy_bin --list_ref_fasta $outdir/list_ref_fa --refbindir $outdir/ref/ctx_bins/ --genome_size 4800000 --qthresh 5 --mem_height 20 --mem_width 100 --vcftools_dir $vcftools_dir --do_union yes --ref CoordinatesOnly --workflow joint --logfile $outdir/log_run_calls.txt";
-print "\n$run_calls\n";
-my $ret_run_calls = qx{$run_calls};
+## Create INDEX for just the samples named in cluster file
+#my $index = "for sample in \$(cat $input_list); do cat $index_dir | grep \$sample &>> $outdir/INDEX; done";
+#my $ret_index = qx{$index};
+#
+## Make a list for the reference
+#my $list = "ls $ref_dir/$ref &> $outdir/list_ref_fa";
+#my $ret_list = qx{$list};
+#
+## Re-run cortex
+#my $prepare = "perl $cortex_dir/scripts/calling/prepare.pl --index $outdir/INDEX  --ref_fa $ref_dir/$ref --dir_for_ref_objects $outdir/ref --vcftools_dir $vcftools_dir --outdir $outdir/results --stampy_bin $stampy_bin --kmer 31";
+#print "\n$prepare\n";
+#my $ret_prepare = qx{$prepare};
+#
+#my $run_calls = "perl $cortex_dir/scripts/calling/run_calls.pl --first_kmer 31 --fastaq_index $outdir/INDEX --auto_cleaning yes --bc yes --pd no --outdir $outdir/results --outvcf output_cluster --ploidy 1 --stampy_hash $outdir/ref/stampy/REF --stampy_bin $stampy_bin --list_ref_fasta $outdir/list_ref_fa --refbindir $outdir/ref/ctx_bins/ --genome_size 4800000 --qthresh 5 --mem_height 20 --mem_width 100 --vcftools_dir $vcftools_dir --do_union yes --ref CoordinatesOnly --workflow joint --logfile $outdir/log_run_calls.txt";
+#print "\n$run_calls\n";
+#my $ret_run_calls = qx{$run_calls};
 
 #######################
 #iii) make tree
@@ -123,11 +123,11 @@ my $to_fasta = "bash $outbryk_dir/scripts/vcf_CortextofastaSNPs.sh  $outdir/resu
 my $ret_to_fasta = qx{$to_fasta};
 my $fasttree = "$fasttree_dir -nt $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered_missing.conf_thresh5.missingness_thresh0.05.all_snps.fasta > $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered.all_snps.fasta.fasttree";
 my $ret_fasttree = qx{$fasttree};
-my $snp_sites = "snp-sites -p -o $outdir/results/vcfs/mergedPassed.vcf.all_snps.phy $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered.all_snps.fasta";
-my $ret_snp_sites = qx{$snp_sites};
-my $tree = "phyml -i $outdir/results/vcfs/mergedPassed.vcf.all_snps.phy -d nt -q -b 250 -m K80 --quiet";
-print "\n$tree\n";
-my $ret_tree = qx{$tree};
+#my $snp_sites = "snp-sites -p -o $outdir/results/vcfs/mergedPassed.vcf.all_snps.phy $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered.all_snps.fasta";
+#my $ret_snp_sites = qx{$snp_sites};
+#my $tree = "phyml -i $outdir/results/vcfs/mergedPassed.vcf.all_snps.phy -d nt -q -b 250 -m K80 --quiet";
+#print "\n$tree\n";
+#my $ret_tree = qx{$tree};
 
 ########################
 #iv) make indel presence/absence matrix
