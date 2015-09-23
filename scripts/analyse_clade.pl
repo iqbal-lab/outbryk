@@ -37,7 +37,9 @@ my $index_dir;
 my $ref_dir;
 my $phage_fasta;
 
-my $outbryk_dir = '/Net/cycloid/data2/users/rachel/projects/outbryk';
+#my $outbryk_dir = '/Net/cycloid/data2/users/rachel/projects/outbryk';
+my $outbryk_dir = abs_path($0);
+$outbryk_dir =~ s/scripts\/analyse_clade.pl//;
 my $cortex_dir = '~/apps/cortex/';
 my $vcftools_dir = '~/apps/vcftools_0.1.13/';
 my $stampy_bin = '/apps/well/stampy/1.0.24-py2.7/stampy.py';
@@ -117,9 +119,9 @@ my $ret_run_calls = qx{$run_calls};
 #######################
 my $filter = "perl $outbryk_dir/scripts/filter_cortex_vcf.pl $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf";
 my $ret_filter = qx{$filter};
-my $to_fasta = "bash $outbryk_dir/scripts/vcf_CortextofastaSNPs.sh  $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered";
+my $to_fasta = "bash $outbryk_dir/scripts/vcf_CortextofastaSNPs.sh  $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered_missing.conf_thresh5.missingness_thresh0.05";
 my $ret_to_fasta = qx{$to_fasta};
-my $fasttree = "$fasttree_dir -nt $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered.all_snps.fasta > $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered.all_snps.fasta.fasttree";
+my $fasttree = "$fasttree_dir -nt $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered_missing.conf_thresh5.missingness_thresh0.05.all_snps.fasta > $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered.all_snps.fasta.fasttree";
 my $ret_fasttree = qx{$fasttree};
 my $snp_sites = "snp-sites -p -o $outdir/results/vcfs/mergedPassed.vcf.all_snps.phy $outdir/results/vcfs/output_cluster_wk_flow_J_RefCO_FINALcombined_BC_calls_at_all_k.raw.vcf.filtered.all_snps.fasta";
 my $ret_snp_sites = qx{$snp_sites};
